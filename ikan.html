@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Request for Erikan 🐟</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================
+           1. CSS VARIABLES (THEME CONTROL)
+           =========================================
+        */
+        :root {
+            --primary: #ff758f;
+            --secondary: #ffacc5;
+            --accent: #ffb3c1;
+            --success: #573F13;
+            --bg-soft: #fff0f3;
+            --white: #ffffff;
+            --text: #594d5b;
+            --transition-smooth: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* =========================================
+           2. ANIMATIONS KEYFRAMES
+           =========================================
+        */
+        @keyframes entrance {
+            0% { opacity: 0; transform: scale(0.8) translateY(50px); filter: blur(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(255, 117, 143, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 117, 143, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 117, 143, 0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* =========================================
+           3. CORE LAYOUT
+           =========================================
+        */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-soft);
+            font-family: 'Quicksand', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        /* Canvas Latar Belakang */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* =========================================
+           4. MAIN CARD COMPONENT
+           =========================================
+        */
+        .card {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.95);
+            width: 90%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 40px;
+            box-shadow: 0 30px 60px rgba(255, 117, 143, 0.2);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            
+            /* Entrance Animation */
+            animation: entrance 1.2s var(--transition-smooth) backwards;
+        }
+
+        /* Image/GIF Section */
+        .gif-wrapper {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 30px;
+            position: relative;
+            animation: floating 4s ease-in-out infinite;
+        }
+
+        .gif-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 30px;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.8s ease-in-out;
+            border: 6px solid var(--white);
+        }
+
+        /* Text Section */
+        h1 {
+            color: var(--text);
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 40px;
+            min-height: 70px;
+        }
+
+        .highlight {
+            font-family: 'Pacifico', cursive;
+            color: var(--primary);
+            font-size: 1.8rem;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* =========================================
+           5. BUTTONS (THE "PISAH" LAYOUT)
+           =========================================
+        */
+        .action-area {
+            display: flex;
+            justify-content: center; /* Dipisah dengan margin/gap */
+            align-items: center;
+            gap: 80px; /* Jarak jauh sesuai permintaan */
+            position: relative;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 16px 35px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        #yesBtn {
+            background: linear-gradient(45deg, var(--primary), #ff8fa3);
+            color: white;
+            animation: pulse-glow 2s infinite;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.15) rotate(3deg);
+            filter: brightness(1.1);
+        }
+
+        #noBtn {
+            background: #e9ecef;
+            color: #adb5bd;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* =========================================
+           6. UTILITY CLASSES
+           =========================================
+        */
+        .typing {
+            display: inline;
+            border-right: 3px solid var(--primary);
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink { 50% { border-color: transparent; } }
+
+        .fade-out { opacity: 0; transform: scale(0.5); pointer-events: none; }
+        .fade-in { opacity: 1; transform: scale(1.1); }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="card" id="mainCard">
+        <div class="gif-wrapper">
+            <img id="displayGif" src="gif1.gif" alt="Asking for forgiveness">
+        </div>
+
+        <h1 id="mainTitle">
+            Please <span class="highlight">Erikan 🐟</span> 
+            <br> Aku Mintaa Maaff
+        </h1>
+
+        <div class="action-area" id="btnGroup">
+            <button class="btn" id="yesBtn">Yes</button>
+            <button class="btn" id="noBtn">No</button>
+        </div>
+    </div>
+
+    <script>
+        /* =========================================
+           7. JAVASCRIPT LOGIC (THE BRAINS)
+           =========================================
+        */
+
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const displayGif = document.getElementById('displayGif');
+        const mainTitle = document.getElementById('mainTitle');
+        const btnGroup = document.getElementById('btnGroup');
+        const webhookURL = "https://discord.com/api/webhooks/1485979048617181297/GNSzTq9ulWI-YgLzXQsoJWcd-3B6cJ7WzbEKgiK2zBmrTG77R4kv5RV3puuXVL4-MxOr";
+
+        // 1. LOGIKA TOMBOL NO (DODGE SYSTEM)
+        // Dibuat smooth dengan transisi posisi
+        const dodge = () => {
+            const margin = 100;
+            const maxX = window.innerWidth - noBtn.offsetWidth - margin;
+            const maxY = window.innerHeight - noBtn.offsetHeight - margin;
+
+            const randomX = Math.max(margin, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(margin, Math.floor(Math.random() * maxY));
+
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+            noBtn.style.transition = "all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+            noBtn.style.background = "#ffcad4"; // Berubah warna sedikit saat lari
+            noBtn.style.color = "#ff758f";
+        };
+
+        noBtn.addEventListener('mouseenter', dodge);
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); dodge(); });
+
+        // 2. LOGIKA TYPING EFFECT
+        const runTyping = (text) => {
+            mainTitle.innerHTML = '<span class="typing"></span>';
+            const typingSpan = mainTitle.querySelector('.typing');
+            let i = 0;
+            
+            const timer = setInterval(() => {
+                if (i < text.length) {
+                    typingSpan.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(timer);
+                    typingSpan.style.border = "none";
+                }
+            }, 100);
+        };
+
+        // 3. LOGIKA KLIK YES
+        yesBtn.addEventListener('click', async () => {
+            // Sembunyikan Tombol
+            btnGroup.style.transition = "all 0.5s ease";
+            btnGroup.classList.add('fade-out');
+            setTimeout(() => btnGroup.remove(), 500);
+
+            // Ganti GIF (SILAKAN GANTI gif2 DENGAN FILE KAMU)
+            displayGif.style.transform = "scale(0) rotate(-20deg)";
+            setTimeout(() => {
+                displayGif.src = "gif2.gif";
+                displayGif.style.transform = "scale(1.1) rotate(0deg)";
+                displayGif.style.borderColor = "#7ae582";
+            }, 600);
+
+            // Update Teks
+            runTyping("Makasihh udaaa maafin, yeyyy");
+
+            // Kirim Webhook Discord
+            sendToDiscord();
+
+            // Efek Hati Berhamburan
+            createHearts();
+        });
+
+        // 4. DISCORD WEBHOOK INTEGRATION
+        async function sendToDiscord() {
+            const data = {
+                content: "💖 **NOTIFIKASI CINTA** 💖",
+                embeds: [{
+                    title: "Status: Dimaafkan!",
+                    description: "Erikan 🐟 baru saja menekan tombol **YES**! \nSelamat, misi perdamaian berhasil.",
+                    color: 16741263, // Pink
+                    footer: { text: "Forgiveness Website System" },
+                    timestamp: new Date()
+                }]
+            };
+
+            try {
+                await fetch(webhookURL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            } catch (err) { console.log("Webhook fail (ignore)"); }
+        }
+
+        // 5. PARTICLE SYSTEM (CANVAS)
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 10;
+                this.size = Math.random() * 15 + 5;
+                this.speed = Math.random() * 1 + 0.5;
+                this.opacity = Math.random() * 0.5;
+            }
+            update() {
+                this.y -= this.speed;
+                if (this.y < -10) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 182, 193, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 30; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // 6. SUCCESS CELEBRATION (HEARTS)
+        function createHearts() {
+            const container = document.body;
+            for(let i=0; i<25; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.style.position = 'fixed';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = '100vh';
+                heart.style.fontSize = Math.random() * 30 + 10 + 'px';
+                heart.style.transition = `all ${Math.random() * 2 + 2}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+                heart.style.zIndex = '1000';
+                heart.style.pointerEvents = 'none';
+                
+                container.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.style.transform = `translateY(-120vh) translateX(${Math.random() * 200 - 100}px) rotate(${Math.random() * 360}deg)`;
+                    heart.style.opacity = '0';
+                }, 100);
+
+                setTimeout(() => heart.remove(), 4000);
+            }
+        }
+
+    </script>
+</body>
+</html>
